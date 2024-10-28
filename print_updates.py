@@ -31,11 +31,15 @@ def get_env(name, message, cast=str):
 
 # Define some variables so the code reads easier
 session = os.environ.get('APP_SESSION', 'printer')
+# session = get_env('APP_SESSION', 'Enter session name: ')
+
 api_id = get_env('APP_API_ID', 'Enter your API ID: ', int)
 api_hash = get_env('APP_API_HASH', 'Enter your API hash: ')
 bot_token = get_env('BOOT_TOKEN', 'Enter your BOOT TOKEN: ')
-proxy = ('http', 'proxy', 3128, False, 'SibiryakovDO', 'vzlsoFia1302')
+# proxy = ('http', 'proxy', 3128, False, 'SibiryakovDO', 'vzlsoFia1302')
 # proxy = None if not tg_util.domain_is_vzljot() else get_env('VZL_PROXY', 'Enter your VZLJOT PROXY: ') 
+proxy = None 
+
 
 
 # This is our update handler. It is called when a new update arrives.
