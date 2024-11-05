@@ -1,4 +1,4 @@
-import telethon
+import os
 import asyncio
 from telethon import TelegramClient, events, Button
 from telethon import functions, types
@@ -150,8 +150,8 @@ def init_quiz_command(bot):
         msg: Message = await event.reply(
             'Yes or no?', 
             buttons=[
-                Button.inline('Yes!', b'quiz_yes'), 
-                Button.inline('Nope', b'quiz_no')
+                [Button.inline('Yes!', b'quiz_yes')], 
+                [Button.inline('Nope', b'quiz_no')]
             ]
         )
         
@@ -176,7 +176,7 @@ def init_quiz_command(bot):
         else:
             msg = await event.answer('Ничего не подходит!', alert=True)
             # quiz_context[event.chat_id].append(msg.id)
-        raise events.StopPropagation()()
+        raise events.StopPropagation()
     
     bot_commands.append(
                 types.BotCommand(
@@ -189,8 +189,20 @@ def init_quiz_command(bot):
 
 async def main():
     
+    if os.environ.get('USERDOMAIN', '') == 'VZLJOT':
+        proxy_setings = [
+            dotenv_config('VZL_PROXY_PROTOCOL'),
+            dotenv_config('VZL_PROXY_HOST'),
+            int(dotenv_config('VZL_PROXY_PORT')),
+            dotenv_config('VZL_PROXY_LOGIN'),
+            dotenv_config('VZL_PROXY_PASSWORD'),
+        ]
+        bot = TelegramClient('bot', api_hash=api_hash, api_id=api_id, proxy=proxy_setings)
+    else:
+        bot = TelegramClient('bot', api_hash=api_hash, api_id=api_id)
+        
+        
 
-    bot = TelegramClient('bot', api_hash=api_hash, api_id=api_id)
 
     await bot.start(bot_token=bot_token)
 
