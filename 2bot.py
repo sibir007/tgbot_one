@@ -1,3 +1,4 @@
+from http import client
 import os
 import asyncio
 from telethon import TelegramClient, events, Button
@@ -123,7 +124,59 @@ def init_mes_edit_command(bot):
                     description="test events.MessageEdited"
                 ))
     
+# test keybords
+def init_keybords_command(bot):
+    resp_msg = """
+    **keybord buttons**:\n
+    **text** - send text;\n
+    **loc** - request location;\n
+    **ph** - request phone;\n
+    **poll** - request poll;\n
+    **poll_q** - request poll;\n
+    **clear_all** - clear all mes
+    """
+    bot_commands.append(
+        types.BotCommand(
+            command='get_keybord',
+            description='test keybords buttons'
+        ))
+    bot_commands.append(
+        types.BotCommand(
+            command='clear_keybord',
+            description='clear keybord'
+        ))
+    
+    
+    @bot.on(events.NewMessage(pattern='/get_keybord'))
+    async def handler(event: EventCommon):
+        # print(event)
+        await event.respond(resp_msg, buttons=[
+            [Button.text('text')],
+            [
+                Button.request_location('loc'),
+                Button.request_phone('ph'),                
+            ],
+            [
+                Button.request_poll('poll'),
+                Button.request_poll('poll_q', force_quiz=False),
+            ],
+            # [Button.text('/clear_all')]
+        ])
+        raise events.StopPropagation()
         
+    @bot.on(events.NewMessage(pattern='/clear_keybord'))
+    async def handler(event: EventCommon):
+        await event.respond("clear keybord", buttons=Button.clear())
+        raise events.StopPropagation()
+
+    # @bot.on(events.NewMessage(pattern='/clear_all'))
+    # async def handler(event: EventCommon):
+    #     async for message in event.client.iter_messages(event.chat_id, ):
+    #         await message.delete()
+    #     raise events.StopPropagation()
+
+
+
 # test inline button
 def init_quiz_command(bot):
     # {
@@ -209,6 +262,8 @@ async def main():
     init_quiz_command(bot)
     
     init_mes_edit_command(bot)
+    
+    init_keybords_command(bot)
 
     @bot.on(events.MessageEdited)
     async def message_edited_handler(event):
